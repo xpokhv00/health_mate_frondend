@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { View, Text, TextInput} from 'react-native';
 import auth from '../../api/auth.service'
 import { ILogin } from "../../types/Auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { jwtDecode } from "jwt-decode";
+import jwt_decode from "jwt-decode";
 import { Button } from 'react-native-paper';
 
 
@@ -32,18 +32,18 @@ export function Login(props: any) {
         auth.login(loginData)
           .then( async (response: any) => {
               if (response && response.access) {
-                  await AsyncStorage.setItem("access_token", response.access)
+                  await AsyncStorage.setItem("tokens", JSON.stringify(response))
               }
-              let identity: any = jwtDecode(response.access);
+              let identity: any = jwt_decode(response.access);
+              console.log("Identity: ", identity)
               if (identity.doctor) {
-                  //TODO: doctors page
-                  navigation.navigate("Doctor")
+                  navigation.navigate("DoctorMain")
               } else if (!identity.doctor) {
                 navigation.navigate("Home")
               }
           })
           .catch((error) => {
-              AsyncStorage.removeItem("access_token")
+              // AsyncStorage.removeItem("access_token")
               console.log(error)
           })
     };
@@ -72,7 +72,7 @@ export function Login(props: any) {
               />
           </View>
 
-        <Button onPress={handleSubmit} >Login</Button>
+        <Button onPress={handleSubmit}>Login</Button>
       </View>
     );
 }

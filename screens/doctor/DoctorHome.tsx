@@ -85,7 +85,7 @@ function calculateMedicationTakenPercentage(medications: any) {
   return Math.round(percentageTaken);
 }
 
-export function Home(props: any) {
+export function DoctorHome(props: any) {
   const [userInfo, setUserInfo] = useState({profile: {name: "John"}});
   const Medications = useAppSelector((state) => state.Info.medications);
   const [treatments, setTreatments] = useState<any>([])
@@ -152,13 +152,7 @@ export function Home(props: any) {
           Hi there 👋{userInfo.profile.name}
         </Text>
         <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginTop: 12 }}>
-          <PieChart
-            widthAndHeight={widthAndHeight}
-            series={series}
-            sliceColor={sliceColor}
-            coverRadius={0.65}
-            coverFill={"#FFF"}
-          />
+
         </View>
         <Text style={{ fontSize: 14 }}>You have already taken {percentageTaken}% of your medication that is due</Text>
         <Text style={{ fontSize: 20, fontWeight: "bold", marginTop: 5 }}>Today's medication</Text>
@@ -167,75 +161,10 @@ export function Home(props: any) {
           <Text style={{ marginLeft: 8 }}>{day}.{month}.{year}</Text>
         </View>
         <View>
-          {treatments.map((medication: { name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; dosage: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; times: { taken: boolean | undefined; }[]; }, index: React.Key | null | undefined) => {
-            const nearestTime = returnNearestMedicationTime(medication);
-            return (
-              <View key={index} style={{ marginTop: 20 }}>
-                {nearestTime.timeString != null && (
-                  <View>
-                    <Text style={{ fontSize: 18, fontWeight: "bold" }}>{nearestTime.timeString}</Text>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        backgroundColor: "rgba(97,224,132, 0.7)",
-                        padding: 10,
-                        borderRadius: 8,
-                        marginTop: 5
-                      }}
-                    >
-                      <View style={{ flex: 1 }}>
-                        <Text style={{ fontSize: 18, fontWeight: "bold" }}>{medication.name}</Text>
-                        <Text>{medication.dosage} tablet per dose</Text>
-                      </View>
-                      <Button color="black" value={medication.times[nearestTime.index].taken} onPress={(value) => {
-                        if (nearestTime.index !== -1) {
-                          const updatedData = [...treatments];
-                          updatedData[index].times[nearestTime.index].taken = value;
-                          setTreatments(updatedData);
-                        }
-                      }}>Take</Button>
-                    </View>
-                  </View>
-                )}
-              </View>
-            );
-          })}
         </View>
         <Text style={{ fontSize: 20, fontWeight: "bold", marginTop: 20 }}>Already taken</Text>
         <View>
-          {treatments.map((medication: { name: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; dosage: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | null | undefined; }, index: React.Key | null | undefined) => {
-            const latestTaken = returnLatestTaken(medication);
-            return (
-              <View key={index} style={{ marginTop: 20 }}>
-                {latestTaken && (
-                  <View>
-                    <Text style={{ fontSize: 18, fontWeight: "bold" }}>
-                      {`${latestTaken}`}
-                    </Text>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        backgroundColor: "rgba(97,224,132,0.26)",
-                        padding: 10,
-                        borderRadius: 8,
-                        marginTop: 5
-                      }}
-                    >
-                      <View style={{ flex: 1 }}>
-                        <Text style={{ fontSize: 18, fontWeight: "bold" }}>{medication.name}</Text>
-                        <Text>{medication.dosage} tablet per dose</Text>
-                      </View>
-                      <Switch
-                        value={false}
-                        disabled
-                        thumbColor="transparent"
-                      />
-                    </View>
-                  </View>
-                )}
-              </View>
-            );
-          })}
+
         </View>
       </ScrollView>
     </View>

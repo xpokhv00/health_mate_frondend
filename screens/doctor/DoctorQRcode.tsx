@@ -5,7 +5,7 @@ import user from '../../api/user.service';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { RNCamera } from "react-native-camera";
 
-export function DoctorMain({ navigation }: any) {
+export function DoctorQRcode({ navigation }: any) {
   const [result, setResult] = useState('');
   const [showCamera, setShowCamera] = useState(true);
 
@@ -42,15 +42,8 @@ export function DoctorMain({ navigation }: any) {
           onRead={onSuccess}
           topContent={
             <Text style={styles.centerText}>
-              Go to{' '}
-              <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on
-              your computer and scan the QR code.
+              Scan your patient QRCode to get their health state.
             </Text>
-          }
-          bottomContent={
-            <TouchableOpacity style={styles.buttonTouchable}>
-              <Text style={styles.buttonText}>OK. Got it!</Text>
-            </TouchableOpacity>
           }
         />
       )}

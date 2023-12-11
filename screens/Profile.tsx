@@ -5,6 +5,8 @@ import medicalConditionsIcon from '../assets/medicalConditions.png';
 import medicalHistoryIcon from '../assets/medicalHistory.png';
 import docIcon from '../assets/doc.png';
 import { Header } from "../components/Header";
+import { Button } from "react-native-paper";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function Profile({ navigation }: any) {
   const [userId, setUserId] = useState( '0'
@@ -17,6 +19,11 @@ export function Profile({ navigation }: any) {
     //   setUserId(parseJwt(token).user_id);
     // }
   }, []);
+
+  const Logout = async () => {
+    await AsyncStorage.removeItem("tokens")
+    navigation.navigate("AuthType")
+  }
 
   return (
     <View style={{ flex: 1 }}>
@@ -68,7 +75,10 @@ export function Profile({ navigation }: any) {
             <Image source={medicalConditionsIcon} style={{ width: 24, height: 24, marginRight: 10 }} />
             <Text>Medical Condition</Text>
           </TouchableOpacity>
+
         </View>
+        <Button onPress={() => Logout()}>Log Out</Button>
+
       </ScrollView>
     </View>
   );

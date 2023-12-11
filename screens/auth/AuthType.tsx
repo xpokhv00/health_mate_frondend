@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useEffect } from "react";
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import googleIcon from '../../assets/googleIcon.png';
 import IconFeather from "react-native-vector-icons/Feather";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import jwt_decode from "jwt-decode";
+import api from "../../api/api.service";
+import user from "../../api/user.service";
 
 export function AuthType(props: any) {
     const {navigation} = props;
@@ -11,6 +15,33 @@ export function AuthType(props: any) {
     const handleContinueWithGoogle = () => {
         // Handle Google authentication here
     };
+
+  const load = async () => {
+    return await AsyncStorage.getItem("tokens")
+  }
+
+  useEffect(() => {
+    load().then((tokens) => {
+      console.log("TOKENS: ", tokens);
+      if (tokens) {
+        const parsedTokens = JSON.parse(tokens)
+        const identity: { doctor: boolean, user_id: string } = parsedTokens && jwt_decode(parsedTokens.access)
+        console.log(identity, "IDENTIFIER")
+        try {
+          user.getInfoByUserId(identity.user_id).then(r => {
+            console.log("REQUEST WAS SEND");
+          })
+          if (identity.doctor) {
+            navigation.navigate("DoctorMain")
+          } else {
+            navigation.navigate("Home")
+          }
+        } catch (e) {
+          AsyncStorage.removeItem("tokens")
+        }
+      }
+    })
+  }, []);
 
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>

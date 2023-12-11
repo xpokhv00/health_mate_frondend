@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { IRegister } from "../../types/Auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import auth from "../../api/auth.service";
-import { jwtDecode } from "jwt-decode";
+import jwt_decode from "jwt-decode";
 
 export function Register(props: any) {
     const {navigation} = props;
@@ -35,12 +35,12 @@ export function Register(props: any) {
           if (response && response.access) {
             await AsyncStorage.setItem("access_token", response.access)
           }
-          let identity: any = jwtDecode(response.access);
+          let identity: any = jwt_decode(response.access);
           console.log(identity)
           console.log(response)
           if (identity.doctor === true) {
             //TODO: doctors page
-            navigation.navigate("Home")
+            navigation.navigate("DoctorMain")
           } else if (identity.doctor === false) {
             navigation.navigate("Gender")
           } else {

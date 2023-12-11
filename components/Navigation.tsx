@@ -22,7 +22,8 @@ import { Birthday } from "../screens/auth/profile/Birthday";
 import { Gender } from "../screens/auth/profile/Gender";
 import { GeneralInfo } from "../screens/auth/profile/GeneralInfo";
 import { Preconditions } from "../screens/auth/profile/Preconditions";
-import { DoctorMain } from "../screens/doctor/DoctorMain";
+import { DoctorQRcode } from "../screens/doctor/DoctorQRcode";
+import { DoctorHome } from "../screens/doctor/DoctorHome";
 
 
 const Stack = createStackNavigator();
@@ -53,7 +54,8 @@ export function MyStack() {
       <Stack.Screen name={"Gender"} component={Gender} />
       <Stack.Screen name={"GeneralInfo"} component={GeneralInfo} />
       <Stack.Screen name={"Preconditions"} component={Preconditions} />
-      <Stack.Screen name={"DoctorMain"} component={DoctorMain} />
+      <Stack.Screen name={"DoctorMain"} component={DoctorHome} />
+      <Stack.Screen name={"DoctorQRcode"} component={DoctorQRcode} />
     </Stack.Navigator>
   );
 }
