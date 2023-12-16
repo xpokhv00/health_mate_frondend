@@ -8,67 +8,69 @@ import { Header } from "../../components/Header";
 import { Button } from "react-native-paper";
 
 export function Chat(props: any) {
+  const {navigation} = props;
 
-    const {navigation} = props;
+  return (
+    <View>
+      {/* Header component */}
+      <Header title={"Questions"}/>
 
-    return (
-      <View>
-        <Header title={"Questions"}/>
-          <View style={{ paddingHorizontal: 16, paddingVertical: 16 }}>
-              <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Questions?</Text>
+      {/* Main content */}
+      <View style={{ paddingHorizontal: 16, paddingVertical: 16 }}>
+        {/* Title */}
+        <Text style={{ fontSize: 24, fontWeight: 'bold' }}>Questions?</Text>
 
-              <View style={{ width: '100%', alignItems: 'center', marginTop: 16 }}>
+        {/* Image */}
+        <View style={{ width: '100%', alignItems: 'center', marginTop: 16 }}>
           <Image
-                    source={ChatIllustration}
-                    style={{ width: '80%', height: 200 }}
-                  />
-              </View>
+            source={ChatIllustration}
+            style={{ width: '70%', height: 200 }}
+          />
+        </View>
 
-              <View style={{ marginTop: 16 }}>
-                  <TouchableOpacity
-                    style={{
-                        backgroundColor: '#61E084',
-                        padding: 16,
-                        marginVertical: 10,
-                        borderRadius: 8,
-                        alignItems: 'center',
-                        flexDirection: "row",
-                        justifyContent: "center"
-                    }}
-                    onPress={() => navigation.navigate('AIChat')}
-                  >
-                      <Image
-                        source={brainstorm}
-                        style={{ width: 24, height: 24, marginRight: 10 }}
-                      />
-                      <Text style={{ fontWeight: 'bold', color: 'white' }}>Ask HealthMate</Text>
-                  </TouchableOpacity>
+        {/* Options for users */}
+        <View style={{ marginTop: 16 }}>
+          {/* Button to ask questions to AI */}
+          <TouchableOpacity
+            style={{
+              backgroundColor: '#61E084',
+              padding: 16,
+              marginVertical: 10,
+              borderRadius: 8,
+              alignItems: 'center',
+              flexDirection: "row",
+              justifyContent: "center"
+            }}
+            onPress={() => navigation.navigate('AIChat')}
+          >
+            <Image
+              source={brainstorm}
+              style={{ width: 24, height: 24, marginRight: 10 }}
+            />
+            <Text >Ask HealthMate</Text>
+          </TouchableOpacity>
 
-                  <TouchableOpacity
-                    style={{
-                        backgroundColor: '#61E084',
-                        padding: 16,
-                        marginVertical: 10,
-                        borderRadius: 8,
-                        alignItems: 'center',
-                      flexDirection: "row",
-                      justifyContent: "center"
-                    }}
-                    onPress={() => navigation.navigate('ContactDoctor')}
-                  >
-                      <Image
-                        source={doctorIcon}
-                        style={{ width: 24, height: 24, marginRight: 10 }}
-                      />
-                      <Text style={{ fontWeight: 'bold', color: 'white' }}>Contact a Doctor</Text>
-                  </TouchableOpacity>
-              </View>
-          </View>
-        <View>
-          <Button onPress={() => navigation.navigate("AuthType")}>Auth Flow</Button>
-          <Button onPress={() => navigation.navigate("DoctorMain")}>Doctor QR</Button>
-          <Button onPress={() => navigation.navigate("Birthday")}>Register Flow</Button>
+          {/* Button to contact a doctor */}
+          <TouchableOpacity
+            style={{
+              backgroundColor: '#61E084',
+              padding: 16,
+              marginVertical: 10,
+              borderRadius: 8,
+              alignItems: 'center',
+              flexDirection: "row",
+              justifyContent: "center"
+            }}
+            onPress={() => navigation.navigate('ContactDoctor')}
+          >
+            <Image
+              source={doctorIcon}
+              style={{ width: 24, height: 24, marginRight: 10 }}
+            />
+            <Text >Contact a Doctor</Text>
+          </TouchableOpacity>
         </View>
       </View>
-    );
+    </View>
+  );
 }

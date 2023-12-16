@@ -3,7 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const api = axios.create({
   // baseURL: process.env.BABEL_BACKEND_URL,
-  baseURL: "http://127.0.0.1:8000/",
+  baseURL: "https://healthmate-95f95e8e168c.herokuapp.com/",
 });
 
 api.interceptors.request.use(

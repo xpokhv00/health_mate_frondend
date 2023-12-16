@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import {Picker} from '@react-native-picker/picker';
 import { useAppSelector } from "../../store/store";
 import user from "../../api/user.service";
+import CustomButton from "../../components/CustomButton";
 
 export function ContactDoctor() {
   const [selectedDoctor, setSelectedDoctor] = useState("dr.reuben@abati.tv");
@@ -24,27 +25,27 @@ export function ContactDoctor() {
     <View style={{ flex: 1 }}>
       {/* Assuming HeadNav is a custom component for navigation */}
       {/* You can include the navigation header as needed */}
-      <ScrollView contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 20 }}>
+      <ScrollView contentContainerStyle={{paddingLeft: 20, paddingVertical: 20, justifyContent: "center" }}>
         <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 10 }}>Contact a Doctor</Text>
-        <Picker
-          selectedValue={selectedDoctor}
-          style={{ height: 50, width: '100%', borderColor: 'gray', borderWidth: 1, borderRadius: 10, padding: 10 }}
-          onValueChange={(itemValue: any, itemIndex: number) => setSelectedDoctor(itemValue)}
-        >
-          {doctors?.map((doc: any) => <Picker.Item label={doc.profile.name + " " + doc.profile.profession }  value={doc.email} />)}
-          <Picker.Item label="Dr. Reuben Abati" value="dr.reuben@abati.tv" />
-          <Picker.Item label="Dr. Med. Franz Abt" value="abt@franz.ch" />
-        </Picker>
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={selectedDoctor}
+            onValueChange={(itemValue: any, itemIndex: number) => setSelectedDoctor(itemValue)}
+          >
+            {doctors?.map((doc: any) => <Picker.Item label={doc.profile.name + " " + doc.profile.profession }  value={doc.email} />)}
+          </Picker>
+        </View>
         <View style={{ marginTop: 10 }}>
-          <Text style={{ fontSize: 16, marginBottom: 5 }}>Your message</Text>
+          <Text style={styles.regularText}>Your message</Text>
           <TextInput
             style={{
-              height: 120,
+              height: 300,
               borderColor: 'gray',
               borderWidth: 1,
               borderRadius: 10,
               padding: 10,
               textAlignVertical: 'top',
+              width: "90%",
             }}
             multiline
             placeholder="Write your message here..."
@@ -52,19 +53,33 @@ export function ContactDoctor() {
             onChangeText={text => setMessage(text)}
           />
         </View>
-        <TouchableOpacity
-          style={{
-            backgroundColor: '#61E084',
-            borderRadius: 10,
-            padding: 10,
-            alignItems: 'center',
-            marginVertical: 20,
-          }}
-          onPress={handleSendMessage}
-        >
-          <Text style={{ color: 'white', fontSize: 16 }}>Send</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <CustomButton onPress={handleSendMessage}>Send</CustomButton>
+        </View>
       </ScrollView>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  pickerContainer: {
+    height: 40,
+    width: '90%',
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 10,
+    marginBottom: 10,
+    justifyContent: "center",
+  },
+
+  regularText: {
+    paddingVertical: 10,
+    fontSize: 17,
+    fontWeight: "bold",
+  },
+
+  buttonContainer: {
+    marginTop: "40%",
+  },
+
+})

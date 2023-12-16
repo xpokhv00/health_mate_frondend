@@ -1,111 +1,174 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, FlatList } from 'react-native';
-import { Button } from 'react-native-paper';
-import user from '../../api/user.service';
+import React, { useState } from "react";
+import { StyleSheet, Text, TextInput, View, TouchableOpacity, ScrollView, FlatList } from "react-native";
+import { Header } from "../../components/Header";
+import CustomButton from "../../components/CustomButton";
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import user from "../../api/user.service";
+import { useAppSelector } from "../../store/store";
+import { Picker } from "@react-native-picker/picker";
+import { Button } from "react-native-paper";
 
-export function PrescribeMedicine({ route, navigation }: any) {
-    const { userId } = route.params;
+export const PrescribeMedicine = (props: any) => {
+  const {userId} = props.route.params;
+  const [times, setTimes] = useState<Array<{time: string, taken: boolean}>>([]);
+  const [medication, setMedication] = useState('');
+  const [name, setName] = useState('');
+  const [duration, setDuration] = useState('7');
+  const [dosage, setDosage] = useState('3');
+  const [isTimePickerVisible, setTimePickerVisible] = useState(false);
 
-    const [name, setName] = useState('');
-    const [dose, setDose] = useState('');
-    const [dailyDosage, setDailyDosage] = useState(0);
-    const [medTimes, setMedTimes] = useState<Array<any>>([]);
-    const [newMedTime, setNewMedTime] = useState('');
-    const [duration, setDuration] = useState('');
-    const [notes, setNotes] = useState('');
+  const medications : Array<{name: string, id: number}> = useAppSelector((state) => state.Info.medications)
 
-    const handleAddMedTime = () => {
-        if (newMedTime.trim() !== '') {
-            setMedTimes([...medTimes, newMedTime]);
-            setNewMedTime('');
-        }
-    };
+  const handleConfirmTime = (selectedDate: Date) => {
+    const selectedTime = `${selectedDate.getHours()}:${selectedDate.getMinutes()}`;
+    setTimes([...times, {time: selectedTime, taken: false}]);
+    hideTimePicker();
+  };
 
-    const handleSubmit = () => {
-        const prescription = {
-            name,
-            dose,
-            dosage: 10,
-            times: JSON.stringify(medTimes),
-            duration,
-            date: Date.now(),
-            notes,
-        };
+  const showTimePicker = () => {
+    setTimePickerVisible(true);
+  };
 
-        user
-          .prescribeMedecine(userId, prescription)
-          .then((response: any) => {
-              console.log(response);
-              navigation.navigate('DoctorMain');
-          })
-          .catch((error: any) => {
-              console.log(error);
-          });
-    };
+  const handleSubmit = () => {
+    user.prescribeMedecine(userId, {
+      times: JSON.stringify(times),
+      medication: medication.id,
+      name,
+      duration,
+      dosage
+    }).then(r => {
+      props.navigation.goBack()
+    })
 
-    return (
-      <View  style={{ flex: 1, alignItems: "center", justifyContent: "center"}}>
-          <Text>General Information</Text>
+  };
 
-          <View style={{ flexDirection: 'row', margin: 20 }}>
-              <TextInput
-                placeholder="Name"
-                style={{  marginRight: 5, borderWidth: 1, borderRadius: 5, width: 120 }}
-                value={name}
-                onChangeText={(text) => setName(text)}
-              />
-              <TextInput
-                placeholder="Dose"
-                style={{ marginLeft: 5, borderWidth: 1, borderRadius: 5, width: 120 }}
-                value={dose}
-                onChangeText={(text) => setDose(text)}
-              />
-          </View>
+  const ClearTimes = () => {
+    setTimes([])
+  }
 
-          <TextInput
-            placeholder="Daily Dosage"
-            style={{ borderWidth: 1, borderRadius: 5, width: 250 }}
-            value={dailyDosage.toString()}
-            onChangeText={(text) => setDailyDosage(parseInt(text))}
-            keyboardType="numeric"
-          />
+  const hideTimePicker = () => {
+    setTimePickerVisible(false);
+  };
 
-          <Text>Medication Times (hh:mm)</Text>
-          {/*<FlatList*/}
-          {/*  data={medTimes}*/}
-          {/*  renderItem={({ item }) => (*/}
-          {/*    <View style={{ borderWidth: 1, borderRadius: 5, margin: 2, padding: 4 }}>*/}
-          {/*        <Text>{item}</Text>*/}
-          {/*    </View>*/}
-          {/*  )}*/}
-          {/*  keyExtractor={(item, index) => index.toString()}*/}
-          {/*/>*/}
-
-          <TextInput
-            placeholder="Enter time"
-            style={{ borderWidth: 1, borderRadius: 5, width: 250 }}
-            value={newMedTime}
-            onChangeText={(text) => setNewMedTime(text)}
-          />
-        <Button onPress={handleAddMedTime} >Add</Button>
-
-          <TextInput
-            placeholder="Duration"
-            style={{ borderWidth: 1, borderRadius: 5, width: 250 }}
-            value={duration}
-            onChangeText={(text) => setDuration(text)}
-          />
-
-          <TextInput
-            placeholder="Notes"
-            style={{ borderWidth: 1, borderRadius: 5, height: 80, textAlignVertical: 'top', width: 250 }}
-            multiline
-            value={notes}
-            onChangeText={(text) => setNotes(text)}
-          />
-
-        <Button onPress={handleSubmit} >Prescribe Medicine</Button>
+  return (
+    <ScrollView style={styles.mainContainer}>
+      <Header title='Prescribe Medicine'/>
+      <Text style={styles.header}>Medicine Information</Text>
+      <View style={styles.regularText}>
+        <Text>Name</Text>
+        <TextInput
+          style={styles.input}
+          value={name}
+          onChangeText={setName}
+        />
+        <Text style={{paddingVertical: 10}}>Medication</Text>
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={medication}
+            onValueChange={(itemValue: any, itemIndex: number) => setMedication(itemValue)}
+          >
+            {medications?.map((med: any) => <Picker.Item label={med.name}  value={med} />)}
+          </Picker>
+        </View>
       </View>
-    );
+      <View style={styles.dosageDurationContainer}>
+        <View style={styles.dosageDuration}>
+          <Text>Dosage</Text>
+          <TextInput
+            keyboardType={"numeric"}
+            style={styles.input}
+            value={dosage}
+            onChangeText={setDosage}
+          />
+        </View>
+        <View style={styles.dosageDuration}>
+          <Text>Duration</Text>
+          <TextInput
+            keyboardType={"numeric"}
+            style={styles.input}
+            value={duration}
+            onChangeText={setDuration}
+          />
+        </View>
+      </View>
+      <View style={styles.regularText}>
+        <Text>Times for Treatment</Text>
+        <TouchableOpacity onPress={showTimePicker}>
+          <Text style={styles.input}>{times.length === 0 ? "Select time" : times.map(time => time.time).join(", ")}</Text>
+        </TouchableOpacity>
+        <DateTimePickerModal
+          isVisible={isTimePickerVisible}
+          mode="time"
+          onConfirm={handleConfirmTime}
+          onCancel={hideTimePicker}
+        />
+       <CustomButton onPress={() => ClearTimes()}>Clear</CustomButton>
+      </View>
+      <View style={styles.buttonContainer}>
+        <CustomButton onPress={handleSubmit}>Continue</CustomButton>
+      </View>
+    </ScrollView>
+  );
 }
 
+const styles = StyleSheet.create({
+  header: {
+    fontSize: 22,
+    padding: 20,
+  },
+
+  regularText: {
+    paddingLeft: 20,
+    fontSize: 15,
+  },
+
+  mainContainer: {
+  },
+  dosageDurationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+
+  dosageDuration: {
+    flex: 1,
+    width: "40%",
+  },
+
+  buttonContainer: {
+    width: "95%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  input: {
+    width: '90%',
+    minWidth: '45%',
+    height: 40,
+    borderColor: 'gray',
+    color: "#000",
+    borderWidth: 1,
+    padding: 10,
+    marginVertical: 10,
+    borderRadius: 10,
+  },
+
+  fromToContainer: {
+    flexDirection: "row",
+    width: '90%',
+    justifyContent: 'space-between',
+  },
+
+  pickerContainer: {
+    height: 40,
+    width: '90%',
+    borderColor: 'gray',
+    borderWidth: 1,
+    borderRadius: 10,
+    marginBottom: 10,
+    justifyContent: "center",
+  },
+
+
+})
